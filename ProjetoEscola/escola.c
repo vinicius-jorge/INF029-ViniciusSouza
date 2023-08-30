@@ -1,22 +1,42 @@
 #include <stdio.h>
 #define TAM_ESTUDANTE 3
+#define CAD_ESTUDANTE_SUCESSO -1
+#define MATRICULA_INVALIDA -2
+#define LISTA_CHEIA -3
+
+typedef struct est{
+  int matricula;
+  //char nome;
+  char sexo;
+  //char dataNascimento;
+  //char CPF;
+  int status;
+}Estudante;
+
+// Protótipo das funções
+int menuGeral();
+int menuEstudante();
+int cadastrarEstudante(listaEstudante[], qtdEstudante);
+void listarEstudante(listaEstudante[], qtdEstudante);
+
+// Utilizar um gerador automático de matrícula;
+// Modularização;
+// inserção de novos atributos na struct Estudante;
+// leitura dos novos atributos;
+// validações necessárias;
 
 int main(void){
 
-    int listaEstudante[TAM_ESTUDANTE];
+    Estudante listaEstudante[TAM_ESTUDANTE];
     int opcao;
     int qtdEstudante = 0;
     int sair = 0; //Opção para sair do menu;
 
     while(!sair)
     {
-      printf("Projeto Escola - Escolha o módulo desejado:\n");
-      printf("0 - Sair\n");
-      printf("1 - Estudante\n");
-      printf("2 - Professor\n");
-      printf("3 - Disciplina\n");
-    
-      scanf("%d", &opcao);
+      
+      opcao = menuGeral();
+      
   
       switch (opcao){
   
@@ -30,13 +50,9 @@ int main(void){
             int sairEstudante = 0;
             int opcaoEstudante;
             while(!sairEstudante){
-            printf("0 - Voltar\n");
-            printf("1 - Cadastrar Estudante\n");
-            printf("2 - Listar Estudante\n");
-            printf("3 - Atualizar Estudante\n");
-            printf("4 - Excluir Estudante\n");
             
-            scanf("%d, &opcaoEstudante");
+            opcaoEstudante = menuEstudante();
+            scanf("%d", &opcaoEstudante);
 
             switch(opcaoEstudante){
 
@@ -44,33 +60,90 @@ int main(void){
                 sairEstudante = 1; //Opção para retornar ao menu geral dos módulos;
                 break;
               }
-              case 1:{
-                printf("1 - Cadastrar Estudante\n");
-                printf("1 - Digite a matrícula:\n");
-                int matricula;
-                scanf("%d", &matricula);
-                if(matricula < 0){
+              case 1:{      
+                int retorno = cadastrarEstudante(listaEstudante, qtdEstudante);
+                if(retorno == LISTA_CHEIA){
+                  printf("Lista de estudantes cheia!\n");
+                }else if(retorno == MATRICULA_INVALIDA){
                   printf("Matrícula inválida!\n");
                 }else{
-                  if(qtdEstudante == TAM_ESTUDANTE){
-                    printf("Lista de estudantes cheia!\n");
-                  }else{
-                    listaEstudante[qtdEstudante] = matricula;
-                    qtdEstudante++;
-                  }
+                  printf("Cadastro realizado com sucesso!\n");
+                  qtdEstudante++;
                 }
                 break;
-              }              
-              case 2:{
-                printf("2 - Listar Estudante\n");
+                          
+              }case 2:{
+                listarEstudante(listaEstudante, qtdEstudante);
                 break;
               }
               case 3:{
                 printf("3 - Atualizar Estudante\n");
+                printf("1 - Digite a matrícula:\n");
+                int matricula;
+                int encontrado = 0;
+                scanf("%d", &matricula);
+                if(matricula < 0){
+                  printf("Matrícula inválida!\n");
+                }else{
+                  for(int i = 0; i < qtdEstudante; i++)
+                  {
+                    if(matricula == listaEstudante[i].matricula && listaEstudante[i].status){
+                      //atualizacao
+                      printf("1 - Digite a nova matrícula:\n");
+                      int novaMatricula;
+                      scanf("%d", &novaMatricula);
+                      if(novaMatricula < 0){
+                        printf("Nova matrícula inválida!\n");
+                      }else{
+                        listaEstudante[i].matricula = novaMatricula;
+                        //listaEstudante[j].sexo = sexo;
+                        //listaEstudante[j].status = status;
+                        encontrado = 1;
+                        break;
+                      }
+                      
+                    }
+                  }
+                  if(encontrado){
+                    printf("Estudante atualizado com sucesso!\n");
+                  }else{
+                    printf("Matricula inexistente!\n");
+                  }
+                }                
                 break;
               }
               case 4:{
                 printf("4 - Excluir Estudante\n");
+                printf("1 - Digite a matrícula:\n");
+                int matricula;
+                int encontrado = 0;
+                scanf("%d", &matricula);
+                if(matricula < 0){
+                  printf("Matrícula inválida!\n");
+                }else{
+                  for(int i = 0; i < qtdEstudante; i++)
+                  {
+                    if(matricula == listaEstudante[i].matricula){
+                      //exclusão lógica
+                      listaEstudante[i].status = -1;
+                      //shift
+                      for(int j = i; j < qtdEstudante - 1; j++){
+                        listaEstudante[j].matricula = listaEstudante[j+1].matricula;
+                        listaEstudante[j].sexo = listaEstudante[j+1].sexo;
+                        listaEstudante[j].status = listaEstudante[j+1].status;
+                      }
+                      qtdEstudante--;
+                      encontrado = 1;
+                      break;
+                    }
+                  }
+                  if(encontrado){
+                    printf("Estudante excluído com sucesso!\n");
+                  }else{
+                    printf("Matricula inexistente!\n");
+                  }
+                }
+                
                 break;
               }
               default:{
@@ -95,27 +168,68 @@ int main(void){
           printf("Opção inválida!\n");
         }
   
-        
       }
     
     }
   
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
   return 0;
+}
+
+int menuGeral(){
+  int opcao;
+  printf("Projeto Escola - Escolha o módulo desejado:\n");
+  printf("0 - Sair\n");
+  printf("1 - Estudante\n");
+  printf("2 - Professor\n");
+  printf("3 - Disciplina\n");
+
+  scanf("%d", &opcao);
+
+  return opcao;
+}
+
+int menuEstudante(){
+  int opcao;
+  printf("0 - Voltar\n");
+  printf("1 - Cadastrar Estudante\n");
+  printf("2 - Listar Estudante\n");
+  printf("3 - Atualizar Estudante\n");
+  printf("4 - Excluir Estudante\n");
+
+  scanf("%d", &opcao);
+
+  return opcao;
+}
+
+int cadastrarEstudante(listaEstudante[], qtdEstudante){
+  printf("1 - Cadastrar Estudante\n");
+  if(qtdEstudante == TAM_ESTUDANTE){
+      return LISTA_CHEIA;
+    }else{
+      printf("1 - Digite a matrícula:\n");
+      int matricula;
+      scanf("%d", &matricula);
+      if(matricula < 0){
+        return MATRICULA_INVALIDA;
+      }
+      listaEstudante[qtdEstudante].matricula = matricula;
+      listaEstudante[qtdEstudante].status = 1;
+      return CAD_ESTUDANTE_SUCESSO;              
+    }
+}
+
+void listarEstudante(listaEstudante[], qtdEstudante){
+  printf("2 - Listar Estudante\n");
+  if(qtdEstudante == 0){
+    printf("2 - Lista Estudante vazia!\n");
+  }else{
+    for(int i = 0; i < qtdEstudante; i++)
+    {
+      if(listaEstudante[i].status){
+        printf("Matricula: %d\n", listaEstudante[i].matricula);
+      }
+    }
+  }
+  
 }
