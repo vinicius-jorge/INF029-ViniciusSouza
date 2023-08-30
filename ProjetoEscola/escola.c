@@ -1,4 +1,5 @@
 #include <stdio.h>
+
 #define TAM_ESTUDANTE 3
 #define CAD_ESTUDANTE_SUCESSO -1
 #define MATRICULA_INVALIDA -2
@@ -34,10 +35,7 @@ int main(void){
 
     while(!sair)
     {
-      
       opcao = menuGeral();
-      
-  
       switch (opcao){
   
         case 0:{
@@ -171,8 +169,7 @@ int main(void){
       }
     
     }
-  
-  
+
   return 0;
 }
 
@@ -183,12 +180,9 @@ int menuGeral(){
   printf("1 - Estudante\n");
   printf("2 - Professor\n");
   printf("3 - Disciplina\n");
-
   scanf("%d", &opcao);
-
   return opcao;
 }
-
 int menuEstudante(){
   int opcao;
   printf("0 - Voltar\n");
@@ -196,12 +190,9 @@ int menuEstudante(){
   printf("2 - Listar Estudante\n");
   printf("3 - Atualizar Estudante\n");
   printf("4 - Excluir Estudante\n");
-
   scanf("%d", &opcao);
-
   return opcao;
 }
-
 int cadastrarEstudante(listaEstudante[], qtdEstudante){
   printf("1 - Cadastrar Estudante\n");
   if(qtdEstudante == TAM_ESTUDANTE){
@@ -218,7 +209,6 @@ int cadastrarEstudante(listaEstudante[], qtdEstudante){
       return CAD_ESTUDANTE_SUCESSO;              
     }
 }
-
 void listarEstudante(listaEstudante[], qtdEstudante){
   printf("2 - Listar Estudante\n");
   if(qtdEstudante == 0){
