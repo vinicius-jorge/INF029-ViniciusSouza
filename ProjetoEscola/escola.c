@@ -4,6 +4,8 @@
 #define CAD_ESTUDANTE_SUCESSO -1
 #define MATRICULA_INVALIDA -2
 #define LISTA_CHEIA -3
+#define ATUALIZACAO_ESTUDANTE_SUCESSO -4
+#define MATRICULA_INEXISTENTE -5
 
 typedef struct est{
   int matricula;
@@ -14,17 +16,21 @@ typedef struct est{
   int status;
 }Estudante;
 
+
 // Protótipo das funções
 int menuGeral();
 int menuEstudante();
 int cadastrarEstudante(listaEstudante[], qtdEstudante);
 void listarEstudante(listaEstudante[], qtdEstudante);
+int atualizarEstudante(listaEstudante[], qtdEstudante);
 
-// Utilizar um gerador automático de matrícula;
+
 // Modularização;
+// Utilizar um gerador automático de matrícula;
+// validações necessárias (data de nascimento e CPF);
 // inserção de novos atributos na struct Estudante;
 // leitura dos novos atributos;
-// validações necessárias;
+
 
 int main(void){
 
@@ -75,38 +81,21 @@ int main(void){
                 break;
               }
               case 3:{
-                printf("3 - Atualizar Estudante\n");
-                printf("1 - Digite a matrícula:\n");
-                int matricula;
-                int encontrado = 0;
-                scanf("%d", &matricula);
-                if(matricula < 0){
-                  printf("Matrícula inválida!\n");
-                }else{
-                  for(int i = 0; i < qtdEstudante; i++)
-                  {
-                    if(matricula == listaEstudante[i].matricula && listaEstudante[i].status){
-                      //atualizacao
-                      printf("1 - Digite a nova matrícula:\n");
-                      int novaMatricula;
-                      scanf("%d", &novaMatricula);
-                      if(novaMatricula < 0){
-                        printf("Nova matrícula inválida!\n");
-                      }else{
-                        listaEstudante[i].matricula = novaMatricula;
-                        //listaEstudante[j].sexo = sexo;
-                        //listaEstudante[j].status = status;
-                        encontrado = 1;
-                        break;
-                      }
-                      
+                  
+                  int retorno = atualizarEstudante(listaEstudante, qtdEstudante);
+
+                  switch (retorno){
+                    case MATRICULA_INVALIDA:{
+                      printf("Matricula inválida!\n");
+                    }
+                    case MATRICULA_INEXISTENTE:{
+                      printf("Matricula inexistente!\n");
+                    }
+                    case ATUALIZACAO_ESTUDANTE_SUCESSO:{
+                      printf("Atualização realizada com sucesso!\n");
                     }
                   }
-                  if(encontrado){
-                    printf("Estudante atualizado com sucesso!\n");
-                  }else{
-                    printf("Matricula inexistente!\n");
-                  }
+                
                 }                
                 break;
               }
@@ -167,15 +156,16 @@ int main(void){
         }
   
       }
-    
-    }
 
   return 0;
 }
 
+  
+
 int menuGeral(){
   int opcao;
-  printf("Projeto Escola - Escolha o módulo desejado:\n");
+  printf("Projeto Escola\n");
+  printf("Escolha o módulo desejado:\n");
   printf("0 - Sair\n");
   printf("1 - Estudante\n");
   printf("2 - Professor\n");
@@ -183,6 +173,7 @@ int menuGeral(){
   scanf("%d", &opcao);
   return opcao;
 }
+
 int menuEstudante(){
   int opcao;
   printf("0 - Voltar\n");
@@ -193,6 +184,7 @@ int menuEstudante(){
   scanf("%d", &opcao);
   return opcao;
 }
+
 int cadastrarEstudante(listaEstudante[], qtdEstudante){
   printf("1 - Cadastrar Estudante\n");
   if(qtdEstudante == TAM_ESTUDANTE){
@@ -209,6 +201,7 @@ int cadastrarEstudante(listaEstudante[], qtdEstudante){
       return CAD_ESTUDANTE_SUCESSO;              
     }
 }
+
 void listarEstudante(listaEstudante[], qtdEstudante){
   printf("2 - Listar Estudante\n");
   if(qtdEstudante == 0){
@@ -220,6 +213,44 @@ void listarEstudante(listaEstudante[], qtdEstudante){
         printf("Matricula: %d\n", listaEstudante[i].matricula);
       }
     }
+  }
+  
+}
+
+int atualizarEstudante(listaEstudante[], qtdEstudante){
+  printf("3 - Atualizar Estudante\n");
+  printf("1 - Digite a matrícula:\n");
+  int matricula;
+  int encontrado = 0;
+  scanf("%d", &matricula);
+  if(matricula < 0){
+    return MATRICULA_INVALIDA;
+  }else{
+  for(int i = 0; i < qtdEstudante; i++)
+  {
+    if(matricula == listaEstudante[i].matricula && listaEstudante[i].status){
+      //atualizacao
+      printf("1 - Digite a nova matrícula:\n");
+      int novaMatricula;
+      scanf("%d", &novaMatricula);
+      if(novaMatricula < 0){
+        printf("Nova matrícula inválida!\n");
+      }else{
+        listaEstudante[i].matricula = novaMatricula;
+        //listaEstudante[j].sexo = sexo;
+        //listaEstudante[j].status = status;
+        encontrado = 1;
+        break;
+      }
+      
+    }
+  }
+    if(encontrado){
+      return ATUALIZACAO_ESTUDANTE_SUCESSO;
+    }else{
+      return MATRICULA_INEXISTENTE;
+    }
+    
   }
   
 }
