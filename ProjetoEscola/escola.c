@@ -87,12 +87,15 @@ int main(void){
                   switch (retorno){
                     case MATRICULA_INVALIDA:{
                       printf("Matricula inválida!\n");
+                      break;
                     }
                     case MATRICULA_INEXISTENTE:{
                       printf("Matricula inexistente!\n");
+                      break;
                     }
                     case ATUALIZACAO_ESTUDANTE_SUCESSO:{
                       printf("Atualização realizada com sucesso!\n");
+                      break;
                     }
                   }
                 
