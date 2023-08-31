@@ -20,9 +20,9 @@ typedef struct est{
 // Protótipo das funções
 int menuGeral();
 int menuEstudante();
-int cadastrarEstudante(listaEstudante[], qtdEstudante);
-void listarEstudante(listaEstudante[], qtdEstudante);
-int atualizarEstudante(listaEstudante[], qtdEstudante);
+int cadastrarEstudante(Estudante listaEstudante[], int qtdEstudante);
+void listarEstudante(Estudante listaEstudante[], int qtdEstudante);
+int atualizarEstudante(Estudante listaEstudante[], int qtdEstudante);
 
 
 // Modularização;
