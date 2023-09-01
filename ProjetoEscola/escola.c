@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define TAM_ESTUDANTE 3
 #define CAD_ESTUDANTE_SUCESSO -1
@@ -6,6 +7,7 @@
 #define LISTA_CHEIA -3
 #define ATUALIZACAO_ESTUDANTE_SUCESSO -4
 #define MATRICULA_INEXISTENTE -5
+#define EXCLUSAO_ESTUDANTE_SUCESSO -6
 
 typedef struct est{
   int matricula;
@@ -23,7 +25,7 @@ int menuEstudante();
 int cadastrarEstudante(Estudante listaEstudante[], int qtdEstudante);
 void listarEstudante(Estudante listaEstudante[], int qtdEstudante);
 int atualizarEstudante(Estudante listaEstudante[], int qtdEstudante);
-
+int excluirEstudante(Estudante listaEstudante[], int qtdEstudante);
 
 // Modularização;
 // Utilizar um gerador automático de matrícula;
@@ -31,8 +33,8 @@ int atualizarEstudante(Estudante listaEstudante[], int qtdEstudante);
 // inserção de novos atributos na struct Estudante;
 // leitura dos novos atributos;
 
-
-int main(void){
+int main()
+{
 
     Estudante listaEstudante[TAM_ESTUDANTE];
     int opcao;
@@ -41,8 +43,11 @@ int main(void){
 
     while(!sair)
     {
+      
       opcao = menuGeral();
-      switch (opcao){
+      
+      switch (opcao)
+      {
   
         case 0:{
           sair = 1;
@@ -53,6 +58,7 @@ int main(void){
           
             int sairEstudante = 0;
             int opcaoEstudante;
+          
             while(!sairEstudante){
             
             opcaoEstudante = menuEstudante();
@@ -60,80 +66,65 @@ int main(void){
 
             switch(opcaoEstudante){
 
-              case 0:{
-                sairEstudante = 1; //Opção para retornar ao menu geral dos módulos;
-                break;
-              }
-              case 1:{      
-                int retorno = cadastrarEstudante(listaEstudante, qtdEstudante);
-                if(retorno == LISTA_CHEIA){
-                  printf("Lista de estudantes cheia!\n");
-                }else if(retorno == MATRICULA_INVALIDA){
-                  printf("Matrícula inválida!\n");
-                }else{
-                  printf("Cadastro realizado com sucesso!\n");
-                  qtdEstudante++;
+                case 0:{
+                  sairEstudante = 1; //Opção para retornar ao menu geral dos módulos;
+                  break;
                 }
-                break;
-                          
-              }case 2:{
-                listarEstudante(listaEstudante, qtdEstudante);
-                break;
-              }
-              case 3:{
-                  
-                  int retorno = atualizarEstudante(listaEstudante, qtdEstudante);
-
-                  switch (retorno){
-                    case MATRICULA_INVALIDA:{
-                      printf("Matricula inválida!\n");
-                      break;
-                    }
-                    case MATRICULA_INEXISTENTE:{
-                      printf("Matricula inexistente!\n");
-                      break;
-                    }
-                    case ATUALIZACAO_ESTUDANTE_SUCESSO:{
-                      printf("Atualização realizada com sucesso!\n");
-                      break;
-                    }
+                case 1:{      
+                  int retorno = cadastrarEstudante(listaEstudante, qtdEstudante);
+                  if(retorno == LISTA_CHEIA){
+                    printf("Lista de estudantes cheia!\n");
+                  }else if(retorno == MATRICULA_INVALIDA){
+                    printf("Matrícula inválida!\n");
+                  }else{
+                    printf("Cadastro realizado com sucesso!\n");
+                    qtdEstudante++;
                   }
-                
-                }                
-                break;
+                  break;
+                            
+                }case 2:{
+                  listarEstudante(listaEstudante, qtdEstudante);
+                  break;
+                }
+                case 3:{
+                    
+                    int retorno = atualizarEstudante(listaEstudante, qtdEstudante);
+  
+                    switch (retorno){
+                      case MATRICULA_INVALIDA:{
+                        printf("Matricula inválida!\n");
+                        break;
+                      }
+                      case MATRICULA_INEXISTENTE:{
+                        printf("Matricula inexistente!\n");
+                        break;
+                      }
+                      case ATUALIZACAO_ESTUDANTE_SUCESSO:{
+                        printf("Atualização realizada com sucesso!\n");
+                        break;
+                      }
+                    }
+                  
+                  }                
+                  break;
               }
               case 4:{
-                printf("4 - Excluir Estudante\n");
-                printf("1 - Digite a matrícula:\n");
-                int matricula;
-                int encontrado = 0;
-                scanf("%d", &matricula);
-                if(matricula < 0){
-                  printf("Matrícula inválida!\n");
-                }else{
-                  for(int i = 0; i < qtdEstudante; i++)
-                  {
-                    if(matricula == listaEstudante[i].matricula){
-                      //exclusão lógica
-                      listaEstudante[i].status = -1;
-                      //shift
-                      for(int j = i; j < qtdEstudante - 1; j++){
-                        listaEstudante[j].matricula = listaEstudante[j+1].matricula;
-                        listaEstudante[j].sexo = listaEstudante[j+1].sexo;
-                        listaEstudante[j].status = listaEstudante[j+1].status;
-                      }
-                      qtdEstudante--;
-                      encontrado = 1;
-                      break;
-                    }
-                  }
-                  if(encontrado){
-                    printf("Estudante excluído com sucesso!\n");
-                  }else{
-                    printf("Matricula inexistente!\n");
-                  }
-                }
-                
+                    int retorno = excluirEstudante(listaEstudante, qtdEstudante);
+                      switch (retorno){
+                        case MATRICULA_INVALIDA:{
+                          printf("Matricula inválida!\n");
+                          break;
+                        }
+                        case MATRICULA_INEXISTENTE:{
+                          printf("Matricula inexistente!\n");
+                          break;
+                        }
+                        case EXCLUSAO_ESTUDANTE_SUCESSO:{
+                          printf("Estudante excluído com sucesso!\n");
+                          qtdEstudante--;
+                          break;
+                        }
+                      }                
                 break;
               }
               default:{
@@ -163,29 +154,29 @@ int main(void){
   return 0;
 }
 
-  
 
 int menuGeral(){
   int opcao;
+  
   printf("Projeto Escola\n");
-  printf("Escolha o módulo desejado:\n");
+  printf("#### Digite a opção: ####\n");
   printf("0 - Sair\n");
-  printf("1 - Estudante\n");
-  printf("2 - Professor\n");
-  printf("3 - Disciplina\n");
+  printf("1 - Gerenciar Estudante\n");
+  printf("2 - Gerenciar Professor\n");
+  printf("3 - Gerenciar Disciplina\n");
   scanf("%d", &opcao);
   return opcao;
 }
 
 int menuEstudante(){
-  int opcao;
+  int opcaoEstudante;
   printf("0 - Voltar\n");
   printf("1 - Cadastrar Estudante\n");
   printf("2 - Listar Estudante\n");
   printf("3 - Atualizar Estudante\n");
   printf("4 - Excluir Estudante\n");
-  scanf("%d", &opcao);
-  return opcao;
+  scanf("%d", &opcaoEstudante);
+  return opcaoEstudante;
 }
 
 int cadastrarEstudante(listaEstudante[], qtdEstudante){
@@ -256,4 +247,36 @@ int atualizarEstudante(listaEstudante[], qtdEstudante){
     
   }
   
+}
+
+int excluirEstudante(listaEstudante[], qtdEstudante){
+  printf("4 - Excluir Estudante\n");
+  printf("1 - Digite a matrícula:\n");
+  int matricula;
+  int encontrado = 0;
+  scanf("%d", &matricula);
+  if(matricula < 0){
+    return MATRICULA_INVALIDA;
+  }else{
+    for(int i = 0; i < qtdEstudante; i++)
+    {
+      if(matricula == listaEstudante[i].matricula){
+        //exclusão lógica
+        listaEstudante[i].status = -1;
+        //shift
+        for(int j = i; j < qtdEstudante - 1; j++){
+          listaEstudante[j].matricula = listaEstudante[j+1].matricula;
+          listaEstudante[j].sexo = listaEstudante[j+1].sexo;
+          listaEstudante[j].status = listaEstudante[j+1].status;
+        }
+        encontrado = 1;
+        break;
+      }
+    }
+    if(encontrado){
+      return EXCLUSAO_ESTUDANTE_SUCESSO;
+    }else{
+      return MATRICULA_INEXISTENTE;
+    }
+  }  
 }
